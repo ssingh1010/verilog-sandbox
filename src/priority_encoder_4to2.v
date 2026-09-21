@@ -5,7 +5,11 @@ module priority_encoder_4to2 (
 );
     wire has_unknown;
 
-    assign has_unknown = (^in === 1'bx);
+    assign has_unknown =
+        ((in[3] !== 1'b0) && (in[3] !== 1'b1)) ||
+        ((in[2] !== 1'b0) && (in[2] !== 1'b1)) ||
+        ((in[1] !== 1'b0) && (in[1] !== 1'b1)) ||
+        ((in[0] !== 1'b0) && (in[0] !== 1'b1));
     assign valid = has_unknown ? 1'bx : |in;
 
     always @* begin
