@@ -53,6 +53,9 @@ module priority_encoder_4to2_tb;
             check_vector(vector[3:0], expected_code, expected_valid);
         end
 
+        check_vector(4'b10z0, 2'bxx, 1'bx);
+        check_vector(4'b0x10, 2'bxx, 1'bx);
+
         $display("PASS priority_encoder_4to2");
         $finish;
     end
