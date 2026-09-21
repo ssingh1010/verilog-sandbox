@@ -19,6 +19,28 @@ module tb_sequence_detector_1011;
 
     always #5 clk = ~clk;
 
+    task drive_and_check;
+        input reg next_din;
+        input reg expected;
+        input integer step;
+        begin
+            @(negedge clk);
+            din = next_din;
+            @(posedge clk);
+            #1;
+            if (match !== expected) begin
+                $display(
+                    "sequence_detector_1011 failed at step %0d: din=%b expected %b got %b",
+                    step,
+                    next_din,
+                    expected,
+                    match
+                );
+                $finish(1);
+            end
+        end
+    endtask
+
     initial begin
         clk = 1'b0;
         rst = 1'b1;
@@ -30,19 +52,7 @@ module tb_sequence_detector_1011;
         rst = 1'b0;
 
         for (i = 11; i >= 0; i = i - 1) begin
-            din = stimulus[i];
-            @(posedge clk);
-            #1;
-            if (match !== expected_match[i]) begin
-                $display(
-                    "sequence_detector_1011 failed at step %0d: din=%b expected %b got %b",
-                    11 - i,
-                    stimulus[i],
-                    expected_match[i],
-                    match
-                );
-                $finish(1);
-            end
+            drive_and_check(stimulus[i], expected_match[i], 11 - i);
         end
 
         $display("sequence_detector_1011 passed");
